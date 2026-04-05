@@ -56,7 +56,7 @@ class ImageConverter:
                 new_height = int(new_width / original_aspect_ratio)
 
             print("Resizing image...")
-            resized_img = img.resize((new_width, new_height), Image.Resampling.LANCZOS)
+            resized_img = img.resize((new_width, new_height), Image.Resampling.BILINEAR)
 
             # Calculate the cropping box to center the crop
             left = (new_width - target_width) // 2
