@@ -131,9 +131,9 @@ class DisplayManager:
             # 1. Midnight Trigger
             # Check if it is currently the 00:00 hour/minute and 
             # if we haven't already done the midnight refresh for today.
-            # if now.hour == 0 and now.minute == 0 and last_midnight_date != now.date():
+            if now.hour == 0 and now.minute == 0 and last_midnight_date != now.date():
             # TEST TIME
-            if now.hour == 17 and now.minute == 18 and last_midnight_date != now.date():
+            # if now.hour == 17 and now.minute == 18 and last_midnight_date != now.date():
                 print(f"Midnight reached ({now.strftime('%Y-%m-%d %H:%M:%S')}). Refreshing...")
                 self.refresh_logic()
                 last_midnight_date = now.date()
