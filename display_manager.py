@@ -82,7 +82,7 @@ class DisplayManager:
             print(f"No image for today, using random: {selected_image}")
         
         self.last_selected_image = selected_image
-        self.last_selected_image = random_image
+        # self.last_selected_image = random_image
             
         # Open and display the image
         # with Image.open(os.path.join(self.image_folder, random_image)) as pic:
@@ -111,8 +111,8 @@ class DisplayManager:
                 # self.last_selected_image = random_image
 
                 # Open and display the image
-                with Image.open(os.path.join(self.image_folder, random_image)) as pic:
-                    print(f"Displaying new image: {random_image}")
+                with Image.open(os.path.join(self.image_folder, selected_image)) as pic:
+                    print(f"Displaying new image: {selected_image}")
                     pic = pic.rotate(self.rotation)
                     self.epd.display(self.epd.getbuffer(pic))
                     self.last_display_time = time.time()
