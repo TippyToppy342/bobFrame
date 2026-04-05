@@ -172,7 +172,12 @@ class DisplayManager:
             
         with Image.open(os.path.join(self.image_folder, selected_image)) as pic:
             pic = pic.rotate(self.rotation)
+            
+            # --- NEW ADDITIONS ---
+            self.epd.init() # Wake up the display right before drawing
             self.epd.display(self.epd.getbuffer(pic))
+            self.epd.sleep() # Put it back to sleep to protect the screen
+            
             self.last_display_time = time.time()
     
 
