@@ -1,53 +1,26 @@
-from image_converter import ImageConverter
 from display_manager import DisplayManager
 import os
-import shutil
 import sys
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-PIC_PATH = os.path.join(SCRIPT_DIR, 'pic')
-SD_MOUNT_BASE = "/media/pi"  # Adjust this path as needed
-
 
 if __name__ == "__main__":
-
     # Collect arguments from the command line
     sd_path = sys.argv[1]
     refresh_time = int(sys.argv[2])
     print(f"Frame manager received SD path: {sd_path}")
     print(f"Frame manager received refresh time: {refresh_time} seconds")
     
-    display_manager = DisplayManager(image_folder=PIC_PATH, refresh_time=refresh_time)
+    # Point the display manager DIRECTLY to the SD card
+    display_manager = DisplayManager(image_folder=sd_path, refresh_time=refresh_time)
     print("Display manager created")
 
-    # Delete existing directory and create a new one
-    # This is where the images will be stored
-    if os.path.exists(PIC_PATH):
-        shutil.rmtree(PIC_PATH)
-    os.makedirs(PIC_PATH)
-
-    image_converter = ImageConverter(source_dir=sd_path, output_dir=PIC_PATH)
-    print("Image converter created")
-
-    # Process images from the SD card
+    # Show startup message
     display_manager.display_message('start.jpg')
-    try:
-        print("Processing images, please wait...")
-        image_converter.process_images()
-    except Exception as e:
-        print(f"Error during image processing: {e}")
 
-    # --- NEW ADDITION START ---
-    # Wait for the converter to finish at least one image before starting the display
-    print("Waiting for first processed image to appear...")
-    retries = 0
-    while not display_manager.fetch_image_files() and retries < 10:
-        time.sleep(2)
-        retries += 1
-    # --- NEW ADDITION END ---
-
-    # Start displaying images
+    # Start displaying images immediately
     try:
+        print("Starting display loop...")
         display_manager.display_images()
     except Exception as e:
         print(f"Error during image display: {e}")
