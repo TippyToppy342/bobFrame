@@ -87,6 +87,10 @@ class ImageConverter:
             final_img = cropped_img.quantize(palette=pal_image, dither=1)
 
             print("Saving image...")
+
+            # --- NEW LINE ADDED HERE ---
+            # Convert back to RGB so it can be saved as a JPEG
+            final_img = final_img.convert("RGB")
             # Save the final image
             final_img.save(os.path.join(self.output_dir, file_name))
     # Resizes the image to fit the target dimensions while maintaining aspect ratio.
