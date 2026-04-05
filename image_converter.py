@@ -36,6 +36,8 @@ class ImageConverter:
             img = ImageOps.exif_transpose(img)
             img = img.convert("RGB") # Ensure image is in RGB mode
 
+            # --- NEW ADDITION: Downscale immediately to prevent memory crashes ---
+            img.thumbnail((1600, 1600))
             # Original dimensions
             orig_width, orig_height = img.size
 
