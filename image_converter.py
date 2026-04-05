@@ -91,6 +91,8 @@ class ImageConverter:
             # --- NEW LINE ADDED HERE ---
             # Convert back to RGB so it can be saved as a JPEG
             final_img = final_img.convert("RGB")
+            base_name = os.path.splitext(file_name)[0]
+            bmp_file_name = f"{base_name}.bmp"
             # Save the final image
             final_img.save(os.path.join(self.output_dir, file_name))
     # Resizes the image to fit the target dimensions while maintaining aspect ratio.
