@@ -37,6 +37,15 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error during image processing: {e}")
 
+    # --- NEW ADDITION START ---
+    # Wait for the converter to finish at least one image before starting the display
+    print("Waiting for first processed image to appear...")
+    retries = 0
+    while not display_manager.fetch_image_files() and retries < 10:
+        time.sleep(2)
+        retries += 1
+    # --- NEW ADDITION END ---
+
     # Start displaying images
     try:
         display_manager.display_images()
