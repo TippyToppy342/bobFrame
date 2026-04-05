@@ -3,6 +3,7 @@ import sys
 import time
 import random
 from PIL import Image
+from datetime import datetime
 from lib.waveshare_epd import epd7in3f
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -28,9 +29,24 @@ class DisplayManager:
         self.stop_display = False
 
     # Fetches the image files from the specified folder.
+    # def fetch_image_files(self):
+    #     return [f for f in os.listdir(self.image_folder)]
     def fetch_image_files(self):
-        return [f for f in os.listdir(self.image_folder)]
+        valid_extensions = ('.png', '.jpg', '.jpeg', '.bmp')
+        return [f for f in os.listdir(self.image_folder) if f.lower().endswith(valid_extensions)]
 
+    def find_today_image(self, images):
+        now = datetime.now()
+        formats = [
+            now.strftime("%Y-%m-%d"),
+            now.strftime("%m-%d"),
+            now.strftime("%m%d")
+        ]
+        for img in images:
+            for fmt in formats:
+                if fmt in img:
+                    return img
+        return None
 
     # Selects a random image from the list of images.
     def select_random_image(self, images):
@@ -55,11 +71,25 @@ class DisplayManager:
             self.display_message('no_valid_images.jpg')
             return
 
-        random_image = self.select_random_image(images)
+        # random_image = self.select_random_image(images)
+        today_image = self.find_today_image(images)
+        
+        if today_image:
+            selected_image = today_image
+            print(f"Displaying today's image: {selected_image}")
+        else:
+            selected_image = self.select_random_image(images)
+            print(f"No image for today, using random: {selected_image}")
+        
+        self.last_selected_image = selected_image
         self.last_selected_image = random_image
             
         # Open and display the image
-        with Image.open(os.path.join(self.image_folder, random_image)) as pic:
+        # with Image.open(os.path.join(self.image_folder, random_image)) as pic:
+        #     pic = pic.rotate(self.rotation)
+        #     self.epd.display(self.epd.getbuffer(pic))
+        #     self.last_display_time = time.time()
+        with Image.open(os.path.join(self.image_folder, selected_image)) as pic:
             pic = pic.rotate(self.rotation)
             self.epd.display(self.epd.getbuffer(pic))
             self.last_display_time = time.time()
@@ -70,8 +100,15 @@ class DisplayManager:
             
             if elapsed_time >= self.refresh_time:
                 images = self.fetch_image_files()
-                random_image = self.select_random_image(images)
-                self.last_selected_image = random_image
+                # random_image = self.select_random_image(images)
+                today_image = self.find_today_image(images)
+                
+                if today_image:
+                    selected_image = today_image
+                else:
+                    selected_image = self.select_random_image(images)
+                self.last_selected_image = selected_image
+                # self.last_selected_image = random_image
 
                 # Open and display the image
                 with Image.open(os.path.join(self.image_folder, random_image)) as pic:
