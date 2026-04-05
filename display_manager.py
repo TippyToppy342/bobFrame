@@ -181,8 +181,12 @@ class DisplayManager:
             self.last_display_time = time.time()
     
 
-    def display_message(self, message_file):
+def display_message(self, message_file):
         with Image.open(os.path.join(SCRIPT_DIR, f"messages/{message_file}")) as img_start:
                 img_start = img_start.rotate(self.rotation)
+                
+                # --- NEW ADDITIONS ---
+                self.epd.init()
                 self.epd.display(self.epd.getbuffer(img_start))
+                self.epd.sleep()
 
