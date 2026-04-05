@@ -48,7 +48,7 @@ def start_frame_manager(sd_path):
     
     print(f"Starting image processing script with path {sd_path}...")
     process = subprocess.Popen(
-        ["python3", IMAGE_PROCESSING_SCRIPT, sd_path, str(refresh_time_sec)], 
+        ["python3", "-u", IMAGE_PROCESSING_SCRIPT, sd_path, str(refresh_time_sec)], 
         stdout=sys.stdout, 
         stderr=sys.stderr,
         text=True)
