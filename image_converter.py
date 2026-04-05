@@ -36,8 +36,10 @@ class ImageConverter:
             img = ImageOps.exif_transpose(img)
             img = img.convert("RGB") # Ensure image is in RGB mode
 
-            # --- NEW ADDITION: Downscale immediately to prevent memory crashes ---
+            # --- MEMORY CRASH FIX ---
+            print("Downscaling to save RAM...")
             img.thumbnail((1600, 1600))
+
             # Original dimensions
             orig_width, orig_height = img.size
 
@@ -73,7 +75,6 @@ class ImageConverter:
             cropped_img = contrast.enhance(1.5)
             
             print("Applying Spectra 6 palette and dithering...")
-            # 1. Define the 6 native Spectra 6 colors (Black, White, Green, Blue, Red, Yellow)
             pal_image = Image.new("P", (1, 1))
             pal_image.putpalette([
                 0, 0, 0,        # Black
@@ -82,22 +83,18 @@ class ImageConverter:
                 0, 0, 255,      # Blue
                 255, 0, 0,      # Red
                 255, 255, 0,    # Yellow
-            ] + [0] * 250 * 3)  # PIL requires a 256-color palette, so pad the rest with 0s
+            ] + [0] * 250 * 3)
 
-            # 2. Quantize the image to the 6-color palette
-            # dither=1 applies Floyd-Steinberg dithering natively in PIL
             final_img = cropped_img.quantize(palette=pal_image, dither=1)
 
             print("Saving image...")
-
-            # --- NEW LINE ADDED HERE ---
-            # Convert back to RGB so it can be saved as a JPEG
             final_img = final_img.convert("RGB")
+            
+            # --- FILE EXTENSION FIX ---
             base_name = os.path.splitext(file_name)[0]
             bmp_file_name = f"{base_name}.bmp"
-            # Save the final image
-            final_img.save(os.path.join(self.output_dir, file_name))
-    # Resizes the image to fit the target dimensions while maintaining aspect ratio.
+
+            final_img.save(os.path.join(self.output_dir, bmp_file_name), "BMP")# Resizes the image to fit the target dimensions while maintaining aspect ratio.
     # Crops the image to the target dimensions and enhances color and contrast.
     # Saves the processed image to the output directory.
     # def resize_image(self, img_path, file_name):
